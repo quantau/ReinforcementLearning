@@ -4,7 +4,7 @@ import pickle
 BOARD_ROWS = 3
 BOARD_COLS = 3
 
-class Player:
+class Learning_Player:
     def __init__(self, name, exp_rate=0.3):
         self.name = name
         self.states = []  # record all positions taken
@@ -68,7 +68,7 @@ class Player:
         fr.close()
 
 
-class HumanPlayer:
+class Human_Player:
     def __init__(self, name):
         self.name = name
 
@@ -79,6 +79,26 @@ class HumanPlayer:
             action = (row, col)
             if action in positions:
                 return action
+
+    # append a hash state
+    def addState(self, state):
+        pass
+
+    # at the end of game, backpropagate and update states value
+    def feedReward(self, reward):
+        pass
+
+    def reset(self):
+        pass
+
+class Random_Player:
+    def __init__(self, name):
+        self.name = name
+
+    def chooseAction(self, positions):
+        idx = np.random.choice(len(positions))
+        action = positions[idx]
+        return action
 
     # append a hash state
     def addState(self, state):

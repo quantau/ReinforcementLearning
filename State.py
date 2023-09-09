@@ -1,4 +1,3 @@
-from tqdm import tqdm
 import numpy as np
 
 BOARD_ROWS = 3
@@ -90,84 +89,6 @@ class State:
         self.boardHash = None
         self.isEnd = False
         self.playerSymbol = 1
-
-    def play(self, rounds=100):
-        for i in tqdm(range(rounds)):
-            while not self.isEnd:
-                # Player 1
-                positions = self.availablePositions()
-                p1_action = self.p1.chooseAction(
-                    positions, self.board, self.playerSymbol)
-                # take action and upate board state
-                self.updateState(p1_action)
-                board_hash = self.getHash()
-                self.p1.addState(board_hash)
-                # check board status if it is end
-
-                win = self.winner()
-                if win is not None:
-                    # self.showBoard()
-                    # ended with p1 either win or draw
-                    self.giveReward()
-                    self.p1.reset()
-                    self.p2.reset()
-                    self.reset()
-                    break
-
-                else:
-                    # Player 2
-                    positions = self.availablePositions()
-                    p2_action = self.p2.chooseAction(
-                        positions, self.board, self.playerSymbol)
-                    self.updateState(p2_action)
-                    board_hash = self.getHash()
-                    self.p2.addState(board_hash)
-
-                    win = self.winner()
-                    if win is not None:
-                        # self.showBoard()
-                        # ended with p2 either win or draw
-                        self.giveReward()
-                        self.p1.reset()
-                        self.p2.reset()
-                        self.reset()
-                        break
-
-    # play with human
-    def play2(self):
-        while not self.isEnd:
-            # Player 1
-            positions = self.availablePositions()
-            p1_action = self.p1.chooseAction(
-                positions, self.board, self.playerSymbol)
-            # take action and upate board state
-            self.updateState(p1_action)
-            self.showBoard()
-            # check board status if it is end
-            win = self.winner()
-            if win is not None:
-                if win == 1:
-                    print(self.p1.name, "wins!")
-                else:
-                    print("tie!")
-                self.reset()
-                break
-
-            else:
-                # Player 2
-                positions = self.availablePositions()
-                p2_action = self.p2.chooseAction(positions)
-
-                self.updateState(p2_action)
-                self.showBoard()
-                win = self.winner()
-                if win is not None:
-                    if win == -1:
-                        print(self.p2.name, "wins!")
-                    else:
-                        print("tie!")
-                    self.reset()
-                    break
 
     def showBoard(self):
         # p1: x  p2: o
