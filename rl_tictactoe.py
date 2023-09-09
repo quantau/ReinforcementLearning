@@ -277,7 +277,7 @@ class HumanPlayer:
         pass
 
 
-if __name__ == "__main__":
+def main():
     # training
     p1 = Player("p1")
     p2 = Player("p2")
@@ -297,3 +297,7 @@ if __name__ == "__main__":
 
     st = State(p1, p2)
     st.play2()
+
+
+if __name__ == "__main__":
+    main()
