@@ -1,9 +1,10 @@
 import numpy as np
 import pickle
 
+from tqdm import tqdm
+
 BOARD_ROWS = 3
 BOARD_COLS = 3
-
 
 class State:
     def __init__(self, p1, p2):
@@ -93,9 +94,7 @@ class State:
         self.playerSymbol = 1
 
     def play(self, rounds=100):
-        for i in range(rounds):
-            if i % 1000 == 0:
-                print("Rounds {}".format(i))
+        for i in tqdm(range(rounds)):
             while not self.isEnd:
                 # Player 1
                 positions = self.availablePositions()
@@ -196,7 +195,8 @@ class Player:
         self.lr = 0.2
         self.exp_rate = exp_rate
         self.decay_gamma = 0.9
-        self.states_value = {}  # state -> value
+        # self.states_value = {}  # state -> value
+        self.q_table = {}  # state -> action values
 
     def getHash(self, board):
         boardHash = str(board.reshape(BOARD_COLS * BOARD_ROWS))
@@ -204,48 +204,52 @@ class Player:
 
     def chooseAction(self, positions, current_board, symbol):
         if np.random.uniform(0, 1) <= self.exp_rate:
-            # take random action
+            # take a random action
             idx = np.random.choice(len(positions))
             action = positions[idx]
         else:
             value_max = -999
+            action = None  # Initialize action to None
             for p in positions:
                 next_board = current_board.copy()
                 next_board[p] = symbol
                 next_boardHash = self.getHash(next_board)
-                value = 0 if self.states_value.get(
-                    next_boardHash) is None else self.states_value.get(next_boardHash)
-                # print("value", value)
-                if value >= value_max:
-                    value_max = value
-                    action = p
-        # print("{} takes action {}".format(self.name, action))
+                if self.q_table.get(next_boardHash) is not None:
+                    value = self.q_table[next_boardHash]
+                    if value >= value_max:
+                        value_max = value
+                        action = p
+            # If action is still None, choose a random action
+            if action is None:
+                idx = np.random.choice(len(positions))
+                action = positions[idx]
         return action
+
 
     # append a hash state
     def addState(self, state):
         self.states.append(state)
 
-    # at the end of game, backpropagate and update states value
     def feedReward(self, reward):
-        for st in reversed(self.states):
-            if self.states_value.get(st) is None:
-                self.states_value[st] = 0
-            self.states_value[st] += self.lr * \
-                (self.decay_gamma * reward - self.states_value[st])
-            reward = self.states_value[st]
+        target = reward
+        for state in reversed(self.states):
+            if self.q_table.get(state) is None:
+                self.q_table[state] = 0
+            self.q_table[state] += self.lr * (target - self.q_table[state])
+            target = self.q_table[state] * self.decay_gamma
+
 
     def reset(self):
         self.states = []
 
     def savePolicy(self):
         fw = open('policy_' + str(self.name), 'wb')
-        pickle.dump(self.states_value, fw)
+        pickle.dump(self.q_table, fw)
         fw.close()
 
     def loadPolicy(self, file):
         fr = open(file, 'rb')
-        self.states_value = pickle.load(fr)
+        self.q_table = pickle.load(fr)
         fr.close()
 
 
@@ -283,6 +287,7 @@ if __name__ == "__main__":
     st.play(50000)
 
     p1.savePolicy()
+    p2.savePolicy()
 
     # play with human
     p1 = Player("computer", exp_rate=0)
