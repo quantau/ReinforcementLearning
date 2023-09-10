@@ -25,7 +25,6 @@ class Game:
                 if win is not None:
                     # state.showBoard()
                     # ended with p1 either win or draw
-                    p1_wins_count+=1
                     state.giveReward()
                     state.p1.reset()
                     state.p2.reset()
@@ -44,13 +43,11 @@ class Game:
                     if win is not None:
                         # state.showBoard()
                         # ended with p2 either win or draw
-                        p2_wins_count+=1
                         state.giveReward()
                         state.p1.reset()
                         state.p2.reset()
                         state.reset()
                         break
-                    ties_count+=1
 
     # play with human
     def human_play(state):

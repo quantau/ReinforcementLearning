@@ -35,8 +35,8 @@ def eval_players(st,num_battles, games_per_battle=100):
     plt.xlabel('Game number')
 
     plt.plot(count, draws, 'r-', label='Draw')
-    plt.plot(count, p1_wins, 'g-', label='Player 1 wins')
-    plt.plot(count, p2_wins, 'b-', label='Player 2 wins')
+    plt.plot(count, p1_wins, 'g-', label='Trained Model')
+    plt.plot(count, p2_wins, 'b-', label='Rndom Player')
     plt.legend(loc='best', shadow=True, fancybox=True, framealpha=0.7)
     plt.show()
 
