@@ -42,7 +42,7 @@ def eval_players(st,num_battles, games_per_battle=100):
 
 def main():
     # competition
-    p1 = Learning_Player("X-man", exp_rate=0)
+    p1 = Learning_Player("X-man", exp_rate=0.3)
     p1.loadPolicy("policy_p1")
     p2 = Random_Player("O-man")
     st = State(p1, p2)
