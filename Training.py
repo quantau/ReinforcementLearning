@@ -9,7 +9,7 @@ def main():
 
     st = State(p1, p2)
     print("training...")
-    Game.play(st,50000)
+    Game.play(st,p1,p2,50000)
 
     p1.savePolicy()
     p2.savePolicy()

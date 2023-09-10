@@ -81,7 +81,7 @@ class State:
             self.p2.feedReward(1)
         else:
             self.p1.feedReward(0.1)
-            self.p2.feedReward(0.5)
+            self.p2.feedReward(0.1)
 
     # board reset
     def reset(self):

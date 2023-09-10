@@ -14,6 +14,9 @@ class Learning_Player:
         # self.states_value = {}  # state -> value
         self.q_table = {}  # state -> action values
 
+    def anneal_exp_rate(self):
+        self.exp_rate *=0.99
+
     def getHash(self, board):
         boardHash = str(board.reshape(BOARD_COLS * BOARD_ROWS))
         return boardHash
